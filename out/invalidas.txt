@@ -1,0 +1,6 @@
+Contra123 # Válida -> RECHAZADA: tiene caracteres inválidos
+abc1234 # Inválida (longitud insuficiente) -> RECHAZADA: tiene caracteres inválidos
+sololetras # Inválida (sin mayúscula ni número) -> RECHAZADA: no tiene dígito, tiene caracteres inválidos
+SOLONUMEROS123 # Inválida (sin minúscula... ah no, la regla no pide minúscula, pero veamos si cumple las otras) -> RECHAZADA: tiene caracteres inválidos
+PasswordCon_Guion # Inválida (tiene un carácter especial _) -> RECHAZADA: no tiene dígito, tiene caracteres inválidos
+12345678 # Inválida (sin mayúscula) -> RECHAZADA: tiene caracteres inválidos
