@@ -19,3 +19,8 @@ echo "Líneas totales en el archivo:"
 grep -c "." data/log_muestra_app.log
 echo "Líneas que cumplen el formato exacto:"
 grep -E -c "$REGEX" data/log_muestra_app.log
+
+echo "{" > out/reporte_log.json
+echo "  \"total\": $TOTAL_LINEAS," >> out/reporte_log.json
+echo "  \"validas\": $VALIDAS" >> out/reporte_log.json
+echo "}" >> out/reporte_log.json

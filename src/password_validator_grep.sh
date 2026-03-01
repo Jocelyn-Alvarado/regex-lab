@@ -1,47 +1,28 @@
 #!/bin/bash
 
-ARCHIVO="data/passwords_muestra.txt"
+# Creamos la carpeta de resultados
 mkdir -p out
 
-# Limpiar archivos previos
-> out/validas.txt
-> out/invalidas.txt
+# Archivo con las contraseñas
+ARCHIVO="data/passwords_muestra.txt"
 
-VALIDAS=0
-INVALIDAS=0
+echo "Validando contraseñas..."
 
-while IFS= read -r pass || [ -n "$pass" ]; do
-    # Eliminar espacios en blanco
-    pass=$(echo "$pass" | xargs)
-    [ -z "$pass" ] && continue
+# 1. Filtrar las que miden 8 o más (el punto . representa cualquier carácter)
+# Buscamos las que tengan al menos 8 puntos
+grep -E ".{8,}" $ARCHIVO > out/temporal_largo.txt
 
-    MOTIVOS=""
+# 2. De esas, filtrar las que tengan una mayúscula [A-Z]
+grep -E "[A-Z]" out/temporal_largo.txt > out/temporal_mayus.txt
 
-    # Regla 1: Longitud >= 8
-    if [[ ! ${#pass} -ge 8 ]]; then
-        MOTIVOS+="longitud insuficiente, "
-    fi
-    # Regla 2: Al menos una mayúscula
-    if [[ ! "$pass" =~ [A-Z] ]]; then
-        MOTIVOS+="no tiene mayúscula, "
-    fi
-    # Regla 3: Al menos un dígito
-    if [[ ! "$pass" =~ [0-9] ]]; then
-        MOTIVOS+="no tiene dígito, "
-    fi
-    # Regla 4: Solo letras y números
-    if [[ "$pass" =~ [^a-zA-Z0-9] ]]; then
-        MOTIVOS+="tiene caracteres inválidos, "
-    fi
+# 3. De esas, filtrar las que tengan un número [0-9]
+grep -E "[0-9]" out/temporal_mayus.txt > out/temporal_num.txt
 
-    if [ -z "$MOTIVOS" ]; then
-        echo "$pass" >> out/validas.txt
-        ((VALIDAS++))
-    else
-        echo "$pass -> RECHAZADA: ${MOTIVOS%, }" >> out/invalidas.txt
-        ((INVALIDAS++))
-    fi
-done < "$ARCHIVO"
+# 4. Finalmente, quitar las que tengan símbolos raros
+# Buscamos las que SOLO tengan letras y números de inicio a fin
+grep -E "^[a-zA-Z0-9]+$" out/temporal_num.txt > out/validas.txt
 
-echo "Total de válidas: $VALIDAS"
-echo "Total de inválidas: $INVALIDAS"
+# Limpiamos los archivos temporales que usamos
+rm out/temporal_*.txt
+
+echo "Proceso terminado. Las contraseñas válidas están en out/validas.txt"
