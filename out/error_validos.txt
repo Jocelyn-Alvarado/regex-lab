@@ -1,0 +1,1 @@
+[ERROR] 2026-02-28 10:05:23 Fallo en la conexión de base de datos

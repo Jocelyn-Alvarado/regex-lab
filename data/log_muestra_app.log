@@ -1,0 +1,6 @@
+[INFO] 2026-02-28 10:00:00 Sistema iniciado correctamente
+[ERROR] 2026-02-28 10:05:23 Fallo en la conexión de base de datos
+[WARN] 2026-02-28 10:10:00 Memoria RAM al 90%
+[DEBUG] 2026-02-28 10:12:45 Revisando hilos de ejecución
+[ERROR] 28-02-2026 10:15:00 Formato de fecha incorrecto (Sospechoso)
+Este es un mensaje basura que no debe contar
