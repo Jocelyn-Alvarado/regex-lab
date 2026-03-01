@@ -1,53 +1,45 @@
 import re
-import os
 
+# Función para validar según las reglas de la práctica
 def is_valid(password):
-    # Regla 1: Longitud >= 8 [cite: 60]
+    # 1. ¿Mide 8 o más?
     if len(password) < 8:
-        return False, "longitud insuficiente"
-    # Regla 2: Al menos una mayúscula [cite: 61]
-    if not re.search(r"[A-Z]", password):
-        return False, "no tiene mayúscula"
-    # Regla 3: Al menos un dígito [cite: 62]
-    if not re.search(r"\d", password):
-        return False, "no tiene dígito"
-    # Regla 4: Solo letras y números [cite: 63]
-    if re.search(r"[^a-zA-Z0-9]", password):
-        return False, "tiene caracteres inválidos"
+        return False
     
-    return True, "válida"
+    # 2. ¿Tiene al menos una mayúscula?
+    if not re.search("[A-Z]", password):
+        return False
+        
+    # 3. ¿Tiene al menos un número?
+    if not re.search("[0-9]", password):
+        return False
+        
+    # 4. ¿Solo tiene letras y números? (Si encuentra algo que NO sea eso, es falsa)
+    if re.search("[^a-zA-Z0-9]", password):
+        return False
+        
+    return True
 
-def main():
-    archivo_entrada = "data/passwords_muestra.txt"
-    if not os.path.exists("out"):
-        os.makedirs("out")
+# Abrimos los archivos (entrada y los dos de salida)
+archivo_entrada = open("data/passwords_muestra.txt", "r")
+archivo_validas = open("out/validas.txt", "w")
+archivo_invalidas = open("out/invalidas.txt", "w")
 
-    validas_count = 0
-    invalidas_count = 0
+# Leemos línea por línea
+for linea in archivo_entrada:
+    password = linea.strip() # Limpiamos espacios o saltos de línea
+    
+    if password == "":
+        continue # Saltamos líneas vacías
+        
+    if is_valid(password):
+        archivo_validas.write(password + "\n")
+    else:
+        archivo_invalidas.write(password + "\n")
 
-    try:
-        with open(archivo_entrada, "r") as f, \
-             open("out/validas.txt", "w") as f_val, \
-             open("out/invalidas.txt", "w") as f_inv:
-            
-            for linea in f:
-                pwd = linea.strip()
-                if not pwd: continue
-                
-                valida, motivo = is_valid(pwd)
-                
-                if valida:
-                    f_val.write(f"{pwd}\n")
-                    validas_count += 1
-                else:
-                    f_inv.write(f"{pwd} -> RECHAZADA: {motivo}\n")
-                    invalidas_count += 1
+print("Proceso terminado. Archivos generados en la carpeta out.")
 
-        print(f"Total de válidas: {validas_count}")
-        print(f"Total de inválidas: {invalidas_count}")
-
-    except FileNotFoundError:
-        print("Error: No se encontró el archivo de contraseñas en data/")
-
-if __name__ == "__main__":
-    main()
+# Siempre cerramos lo que abrimos
+archivo_entrada.close()
+archivo_validas.close()
+archivo_invalidas.close()
